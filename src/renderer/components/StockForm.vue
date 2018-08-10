@@ -4,7 +4,7 @@
       <input type="text" id="nameInput" class="form-control mb-2 mr-sm-2 mb-sm-0" placeholder="Jane Doe" v-model="stockName">
       <input type="submit" class="btn btn-secondary">
     </form>
-    
+    {{stockData}}
   </div>
 </template>
 
@@ -15,7 +15,7 @@
   export default {
     data() {
       return {
-        info: null,
+        stockData: null,
         stockName: null
       }
     },
@@ -26,7 +26,8 @@
           .get(
             "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=Acc&interval=1min&apikey=" + api.key
           )
-          .then(response => (this.info = response));
+          .then(response => (this.$emit('stockDataRequested', response.data)))
+          
       }
     }  
   }

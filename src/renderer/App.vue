@@ -1,8 +1,8 @@
 <template>
   <div class="container">
       <nav-header></nav-header>
-      <stock-form></stock-form>
-      {{info}}
+      <stock-form @stockDataRequested="onRequestStockData"></stock-form>
+      {{stockData}}
     </div>
 </template>
 
@@ -12,7 +12,7 @@
   export default {
     data() {
       return {
-        info: stockForm.info
+        stockData: "stockForm.info"
       }
     },
     components: {
@@ -20,7 +20,10 @@
       stockForm: StockForm
     },
     methods: {
+      onRequestStockData (value) {
+        this.stockData = value
 
+      }
     }  
   }
 </script>

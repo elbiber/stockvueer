@@ -5,9 +5,7 @@ import { format as formatUrl } from 'url'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 app.on('ready', () => {
-  let window = new BrowserWindow({
-    width: 1024
-  })
+  let window = new BrowserWindow({ width: 1600, height: 900 } )
   if (isDevelopment) {
     window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
     window.webContents.openDevTools()
