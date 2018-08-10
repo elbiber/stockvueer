@@ -6,7 +6,12 @@
 
 <script>
   export default {
-    props: ['displayText']    
+    data() {
+      return {
+        stockdata: this.displayText
+      }
+    },  
+    props: ['displayText']
   }
 </script>
 

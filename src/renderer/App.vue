@@ -1,15 +1,15 @@
 <template>
   <div class="container">
-    <nav-header></nav-header>
+    <stock-header></stock-header>
     <div class="row">
         <stock-graph class="col-sm-6" :displayText="stockData"></stock-graph>
-        <stock-form class="col-sm-6" @stockDataRequested="onRequestStockData"></stock-form>    
+        <stock-form class="col-sm-6" @stockDataReceived="onStockDataReceived"></stock-form>    
     </div>  
   </div>
 </template>
 
 <script>
-  import Header from "./components/Header"
+  import StockHeader from "./components/StockHeader"
   import StockForm from './components/StockForm'
   import StockGraph from './components/StockGraph'
   export default {
@@ -19,12 +19,12 @@
       }
     },
     components: {
-      navHeader: Header,
+      stockHeader: StockHeader,
       stockForm: StockForm,
       stockGraph: StockGraph
     },
     methods: {
-      onRequestStockData (value) {
+      onStockDataReceived (value) {
         this.stockData = value
 
       }
