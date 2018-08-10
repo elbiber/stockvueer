@@ -1,23 +1,27 @@
 <template>
   <div class="container">
-      <nav-header></nav-header>
-      <stock-form @stockDataRequested="onRequestStockData"></stock-form>
-      {{stockData}}
-    </div>
+    <nav-header></nav-header>
+    <div class="row">
+        <stock-graph class="col-sm-6" :displayText="stockData"></stock-graph>
+        <stock-form class="col-sm-6" @stockDataRequested="onRequestStockData"></stock-form>    
+    </div>  
+  </div>
 </template>
 
 <script>
   import Header from "./components/Header"
   import StockForm from './components/StockForm'
+  import StockGraph from './components/StockGraph'
   export default {
     data() {
       return {
-        stockData: "stockForm.info"
+        stockData: null
       }
     },
     components: {
       navHeader: Header,
-      stockForm: StockForm
+      stockForm: StockForm,
+      stockGraph: StockGraph
     },
     methods: {
       onRequestStockData (value) {
