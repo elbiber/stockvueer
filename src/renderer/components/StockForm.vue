@@ -31,8 +31,8 @@
     },
     watch: {
       stockData: function(val) {
-        console.log(val["Meta Data"]["2. Symbol"])
-        this.$emit('stockDataReceived', val["Meta Data"]["2. Symbol"])
+        //console.log(val["Meta Data"]["2. Symbol"])
+        this.$emit('stockDataReceived', val)
       }
     }
   }

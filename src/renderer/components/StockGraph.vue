@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>{{displayText}}</p>
+    <p>{{metaData}}</p>
   </div>
 </template>
 
@@ -8,10 +8,16 @@
   export default {
     data() {
       return {
-        stockdata: this.displayText
+        metaData: ""
       }
     },  
-    props: ['displayText']
+    props: ['displayText'],
+    watch: {
+      displayText: function(val) {
+        //console.log(val)
+        this.metaData = val["Time Series (1min)"]
+      }
+    }
   }
 </script>
 
