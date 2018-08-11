@@ -17,7 +17,17 @@ export default {
                data: [40, 20, 30, 50, 90, 10, 20, 40, 50, 70, 90, 100]
             }]
          }, 
-         props: ['rawData'],
+         watch: {
+          timeStamp: function(timeStamp) {
+              this.labels = timeStamps
+          },
+          data: function(open) {
+            this.data = open
+            this.renderChart(this.datacollection, this.options)
+        }
+        },
+         
+         props: ['timeStamps','open'],
          //Chart.js options that controls the appearance of the chart
          options: {
             scales: {

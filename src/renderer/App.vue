@@ -3,7 +3,7 @@
     <stock-header></stock-header>
     <div class="row">
         <!-- <stock-graph class="col-sm-6" :displayText="stockData"></stock-graph> -->
-        <stock-graph class="col-sm-6" :displayText="stockData"></stock-graph>
+        <stock-graph class="col-sm-6" :rawStockData="stockData"></stock-graph>
         <stock-form class="col-sm-6" @stockDataReceived="onStockDataReceived"></stock-form>
             
     </div>  
@@ -13,8 +13,7 @@
 <script>
   import StockHeader from "./components/StockHeader"
   import StockForm from './components/StockForm'
-  //import StockGraph from './components/StockGraph'
-  import StockGraph from './components/stockgraph/StockGraph.vue'
+  import StockGraph from './components/StockGraph/StockGraph.vue'
   export default {
     data() {
       return {

@@ -24,7 +24,7 @@
         console.log("Submitted")
         axios
           .get(
-            "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=Acc&interval=1min&apikey=" + api.key
+            "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=Acc&interval=1min&apikey=" + api.key
           )
           .then(response => ( this.stockData = response.data))
       }
