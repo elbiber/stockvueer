@@ -2,8 +2,10 @@
   <div class="container">
     <stock-header></stock-header>
     <div class="row">
+        <!-- <stock-graph class="col-sm-6" :displayText="stockData"></stock-graph> -->
         <stock-graph class="col-sm-6" :displayText="stockData"></stock-graph>
-        <stock-form class="col-sm-6" @stockDataReceived="onStockDataReceived"></stock-form>    
+        <stock-form class="col-sm-6" @stockDataReceived="onStockDataReceived"></stock-form>
+            
     </div>  
   </div>
 </template>
@@ -11,12 +13,14 @@
 <script>
   import StockHeader from "./components/StockHeader"
   import StockForm from './components/StockForm'
-  import StockGraph from './components/StockGraph'
+  //import StockGraph from './components/StockGraph'
+  import StockGraph from './components/stockgraph/StockGraph.vue'
   export default {
     data() {
       return {
         stockData: null
       }
+
     },
     components: {
       stockHeader: StockHeader,
