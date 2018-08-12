@@ -2,10 +2,8 @@
   <div class="container">
     <stock-header></stock-header>
     <div class="row">
-        <!-- <stock-graph class="col-sm-6" :displayText="stockData"></stock-graph> -->
-        <stock-graph class="col-sm-6" :rawStockData="stockData"></stock-graph>
-        <stock-form class="col-sm-6" @stockDataReceived="onStockDataReceived"></stock-form>
-            
+        <stock-graph class="col-sm-6" :stockDataForm="stockDataForm"></stock-graph>
+        <stock-form class="col-sm-6" @stockDataSubmitted="stockDataForm = $event"></stock-form>            
     </div>  
   </div>
 </template>
@@ -17,9 +15,8 @@
   export default {
     data() {
       return {
-        stockData: null
+        stockDataForm: null
       }
-
     },
     components: {
       stockHeader: StockHeader,
@@ -27,19 +24,15 @@
       stockGraph: StockGraph
     },
     methods: {
-      onStockDataReceived (value) {
-        this.stockData = value
-
+      onStockDataSubmitted (value) {    
+        this.stockDataForm = value
+        console.log('App: '+ this.stockDataForm.stockSymbol)
       }
     }  
   }
 </script>
 <style>
   @import url("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css");
-  /* body {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    color: #333333;
-  } */
   .btn {
     cursor: pointer;
   }

@@ -2,10 +2,10 @@
   <div class="container">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">{{stockSymbol}}</h3>
-        <p>{{timeSeries}}</p>
+        <h3 class="box-title">MFST</h3>
+        <p>Daily</p>
       </div>
-      <line-chart :timeStamps="timeStamps" :open="open"></line-chart>
+      <line-chart></line-chart>
     </div>
     <!-- <p>{{metaData}}</p> -->
   </div>
@@ -35,6 +35,7 @@
   export default {
     data() {
       return {
+        
         metaData: "",
         stockSymbol: '',
         timeSeries: '',
@@ -42,24 +43,28 @@
         open: []
       }
     },  
-    props: ['rawStockData'],
+    props: ['stockDataForm'],
     watch: {
-      rawStockData: function(val) {
-        console.log(val)
-        //this.metaData = val["Time Series (1min)"]
-        this.stockSymbol = val['Meta Data']['2. Symbol']
-        this.timeSeries = Object.keys(val)[1]
-        this.timeStamps = Object.keys(val[this.timeSeries])
-        this.open = []
-        this.timeStamps.forEach(function(timeStamp){
-          
-        })
-        for(let i =0; i < this.timeStamps.length; i++) {
-          this.open.push(val[this.timeSeries][this.timeStamps[i]]['1. open'])
-        }
-        console.log(this.open.length)
-        
+      stockDataForm: function() {
+        console.log('Graph: '+ this.stockDataForm.stockSymbol)
       }
+      // rawStockData: function(val) {
+      //   console.log(val)
+      //   //this.metaData = val["Time Series (1min)"]
+      //   this.stockSymbol = val['Meta Data']['2. Symbol']
+      //   this.timeSeries = Object.keys(val)[1]
+      //   this.timeStamps = Object.keys(val[this.timeSeries])
+      //   this.open = []
+      //   this.timeStamps.forEach(function(timeStamp){
+          
+      //   })
+      //   for(let i =0; i < this.timeStamps.length; i++) {
+      //     this.open.push(val[this.timeSeries][this.timeStamps[i]]['1. open'])
+      //   }
+      //   console.log(this.open.length)
+        
+      // },
+  
     },
     components: {
       lineChart: LineChart
