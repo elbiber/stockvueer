@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <stock-header></stock-header>
+    <h1 class="text-center">Stockvueer</h1><hr>
     <div class="row">
         <stock-graph class="col-sm-6" :stockDataForm="stockDataForm"></stock-graph>
         <stock-form class="col-sm-6" @stockDataSubmitted="onStockDataSubmitted"></stock-form>            
@@ -30,9 +30,3 @@
     }
   }
 </script>
-<style>
-  @import url("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css");
-  .btn {
-    cursor: pointer;
-  }
-</style>
