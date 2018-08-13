@@ -1,6 +1,5 @@
 import { Line } from 'vue-chartjs'
 import axios from 'axios'
-const api = require('./api.json')
 
 export default {
   extends: Line,
@@ -25,28 +24,21 @@ export default {
       }
     }   
   },
-  props: ['stockDataForm'],
+  props: ['query'],
   computed: {
-    symbol() {
-      return this.stockDataForm.stockSymbol
-    },
-    timeStamp() {
-      return this.stockDataForm.stockDataIntervall
+    queryUpdated() {
+      return this.query
     }
   },
   watch: {
-    symbol(val) {
-      console.log(val)
-      axios.get('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + val + '&outputsize=full&apikey=' + api.key)
+    queryUpdated(query) {
+      axios.get(query)
         .then(response => {
-          //console.log(response.data)
           this.rawStockData = response.data
         })            
     },
-    timeStamp() {
-      
-    },
     rawStockData(stockJSON) {
+      const symbol = stockJSON['Meta Data']['2. Symbol']
       const timeIntervall = Object.keys(stockJSON)[1]
       this.datacollection.labels = Object.keys(stockJSON[timeIntervall]).reverse()
       this.datacollection.datasets[0].data = []
@@ -54,12 +46,7 @@ export default {
         this.datacollection.datasets[0].data.push(stockJSON[timeIntervall][this.datacollection.labels[i]]['1. open'])
       }
       this.renderChart(this.datacollection, this.options)
-    }
-  },
-  methods: {
-    setGraph() {
-      console.log(this.stockData)
-      this.renderChart(this.datacollection, this.options)
+      this.$emit('graphRendered', {symbol: symbol, timeSeries: timeIntervall})
     }
   }
 }
