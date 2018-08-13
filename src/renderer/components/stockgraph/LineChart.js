@@ -32,7 +32,11 @@ export default {
     }
   },
   watch: {
-    symbol() {
+    symbol(val) {
+      this.rawStockData = val
+      
+    },
+    rawStockData() {
       this.renderChart(this.datacollection, this.options)
     }
   },
