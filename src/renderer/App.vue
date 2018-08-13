@@ -3,7 +3,7 @@
     <stock-header></stock-header>
     <div class="row">
         <stock-graph class="col-sm-6" :stockDataForm="stockDataForm"></stock-graph>
-        <stock-form class="col-sm-6" @stockDataSubmitted="stockDataForm = $event"></stock-form>            
+        <stock-form class="col-sm-6" @stockDataSubmitted="onStockDataSubmitted"></stock-form>            
     </div>  
   </div>
 </template>
@@ -15,7 +15,7 @@
   export default {
     data() {
       return {
-        stockDataForm: null
+        stockDataForm: 'Apple'
       }
     },
     components: {
@@ -26,9 +26,8 @@
     methods: {
       onStockDataSubmitted (value) {    
         this.stockDataForm = value
-        console.log('App: '+ this.stockDataForm.stockSymbol)
       }
-    }  
+    }
   }
 </script>
 <style>

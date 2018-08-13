@@ -2,10 +2,10 @@
   <div class="container">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">MFST</h3>
-        <p>Daily</p>
+        <h3 class="box-title">{{stockDataForm.stockSymbol}}</h3>
+        <p>{{stockDataForm.stockIntervall}}</p>
       </div>
-      <line-chart></line-chart>
+      <line-chart :stockDataForm="stockDataForm"></line-chart>
     </div>
     <!-- <p>{{metaData}}</p> -->
   </div>
@@ -34,8 +34,7 @@
   import LineChart from './LineChart.js'
   export default {
     data() {
-      return {
-        
+      return {        
         metaData: "",
         stockSymbol: '',
         timeSeries: '',
@@ -45,9 +44,12 @@
     },  
     props: ['stockDataForm'],
     watch: {
-      stockDataForm: function() {
-        console.log('Graph: '+ this.stockDataForm.stockSymbol)
-      }
+ 
+      // stockDataForm(val) {
+      //   this.stockSymbol = val.stockSymbol
+      //   console.log('Graph: '+ this.stockSymbol)
+      // }
+
       // rawStockData: function(val) {
       //   console.log(val)
       //   //this.metaData = val["Time Series (1min)"]

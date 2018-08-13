@@ -5,7 +5,7 @@ const api = require('./api.json')
 export default {
   extends: Line,
   mounted() {
-      //this.setGraph()
+    //this.renderChart(this.datacollection, this.options)
   },
   data() {
     return {
@@ -25,15 +25,15 @@ export default {
       }
     }   
   },
-  props: ['stockDataForm2'],
+  props: ['stockDataForm'],
+  computed: {
+    symbol: function() {
+      return this.stockDataForm.stockSymbol
+    }
+  },
   watch: {
-    stockDataForm2 (value) {
-      console.log(value)
-      console.log('Line: '+ this.stockDataForm2.stockSymbol)
-      // axios.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=Acc&interval=1min&apikey=" + api.key)
-      // .then(response => ( this.stockData = response.data))
-      // this.renderChart(this.datacollection, this.options)
-      //this.setGraph()
+    symbol() {
+      this.renderChart(this.datacollection, this.options)
     }
   },
   methods: {
