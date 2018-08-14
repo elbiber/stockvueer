@@ -11,10 +11,19 @@
       <label for="inputSymbol" class="col-4 col-form-label">Time Series:</label>
       <div class="col-8">
         <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" v-model="inputStockTimeSeries">
-          <option v-for="option in options" :key="option.text" v-bind:value="option.value">
+          <option v-for="option in options" :key="option.text" :value="option.value">
             {{ option.text }}
           </option>
         </select>        
+      </div>
+    </div>
+    <div class="form-group row" v-if ="inputStockTimeSeries == 'TIME_SERIES_INTRADAY'">
+      <label for="inputSymbol" class="col-4 col-form-label">Daily Interval:</label>
+      <div class="col-8">
+        <div class="custom-control custom-radio custom-control-inline" v-for="radioOption in radioOptions" :key="radioOption.label">
+          <input type="radio" :id="'radio-' + radioOption.value" name="radio-option" class="custom-control-input" v-model="inputStockInterval" :value="radioOption.value">
+          <label class="custom-control-label" :for="'radio-' + radioOption.value">{{ radioOption.label }}</label>          
+        </div>  
       </div>
     </div>
     <input type="submit" class="btn btn-secondary"> 
@@ -25,10 +34,13 @@
 <script>
   const api = require('./api.json')
   export default {
+    mounted() {
+      this.formSubmitted()
+    },
     data() {
       return {
         inputStockSymbol: 'MSFT',
-        inputStockIntervall: '',
+        inputStockInterval: '5min',
         inputStockTimeSeries: 'TIME_SERIES_DAILY',
         options: [
           {text: 'Intraday', value: 'TIME_SERIES_INTRADAY'},
@@ -36,11 +48,13 @@
           {text: 'Weekly', value: 'TIME_SERIES_WEEKLY'},
           {text: 'Monthly', value: 'TIME_SERIES_MONTHLY'}
         ],
-        stockDataForm: {
-          stockSymbol: '',
-          stockIntervall: '',
-          timeSeries: ''
-        }        
+        radioOptions: [
+          {label: '1 min', value: '1min'},
+          {label: '5 min', value: '5min'},
+          {label: '15 min', value: '15min'},
+          {label: '30 min', value: '30min'},
+          {label: '60 min', value: '60min'}
+        ]  
       }
     },
     methods: {
@@ -50,7 +64,13 @@
     },
     computed: {
       query() {
-        return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&'+this.inputStockIntervall+'&apikey=' + api.key
+        if(this.inputStockTimeSeries == 'TIME_SERIES_INTRADAY') {
+          //return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&interval='+this.inputStockInterval+'&outputsize=full&apikey=' + api.key
+          return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&interval='+this.inputStockInterval+'&apikey=' + api.key
+        } else {
+          //return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&outputsize=full&apikey=' + api.key
+          return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&apikey=' + api.key
+        }        
       }
     }
   }
