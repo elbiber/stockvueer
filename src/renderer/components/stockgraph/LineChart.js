@@ -1,5 +1,6 @@
 import { Line } from 'vue-chartjs'
 import axios from 'axios'
+import { stat } from '../../../../node_modules/fs-extra-p';
 
 export default {
   extends: Line,
@@ -28,7 +29,7 @@ export default {
            data: []
           },
           {
-            label: 'Close',
+            label: 'Min Payload',
             //backgroundColor: '#f87979',
             borderWidth: 10,
             borderColor: 'red',
@@ -37,27 +38,11 @@ export default {
             pointBorderColor: 'red',
             lineTension: 0,
             fill: false,
-            pointRadius: 1,
+            pointRadius: 0,
             //Data to be represented on y-axis
             data: []
           }
         ]
-      },
-      options: {
-        annotation: {
-          annotations: [{
-            type: 'line',
-            mode: 'horizontal',
-            scaleID: 'y-axis-0',
-            value: 5,
-            borderColor: 'rgb(75, 192, 192)',
-            borderWidth: 4,
-            label: {
-              enabled: false,
-              content: 'Test label'
-            }
-          }]
-        }
       }         
     }   
   },
@@ -75,15 +60,31 @@ export default {
         })            
     },
     rawStockData(stockJSON) {
+      
       const symbol = stockJSON['Meta Data']['2. Symbol']
       const timeIntervall = Object.keys(stockJSON)[1]
       this.datacollection.labels = Object.keys(stockJSON[timeIntervall]).reverse()
+      const startX = 30
+      const endX = 60
+      const startY = stockJSON[timeIntervall][this.datacollection.labels[startX]]['1. open']
+      const endY = stockJSON[timeIntervall][this.datacollection.labels[endX]]['1. open']
+      const pitch = (endY-startY)/(endX-startX)
+      
+      console.log(pitch)
+      
       this.datacollection.datasets[0].data = []
       this.datacollection.datasets[1].data = []
       for(let i =0; i < this.datacollection.labels.length; i++) {
         this.datacollection.datasets[0].data.push(stockJSON[timeIntervall][this.datacollection.labels[i]]['1. open'])
-        this.datacollection.datasets[1].data.push(stockJSON[timeIntervall][this.datacollection.labels[i]]['4. close'])
+        if(i >= 30 && i <= 60){
+          this.datacollection.datasets[1].data.push(pitch * (i - startX) + parseFloat(startY))
+          //this.datacollection.datasets[1].data.push(0.5 * i + 40)
+        } else {
+          this.datacollection.datasets[1].data.push(null)
+        }
+        // this.datacollection.datasets[1].data.push(stockJSON[timeIntervall][this.datacollection.labels[i]]['4. close'])
       }
+      //console.log(this.datacollection.datasets[1].data)
       this.renderChart(this.datacollection, this.options)
       this.$emit('graphRendered', {symbol: symbol, timeSeries: timeIntervall})
     }
