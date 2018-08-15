@@ -5,8 +5,20 @@
         <h3 class="box-title">{{metaData.symbol}}</h3>
         <p>{{metaData.timeSeries}}</p>
       </div>
-      <line-chart :query="query" @graphRendered="metaData = $event"></line-chart>
-      <stock-form @querySubmitted="query = $event" ></stock-form>
+      <div class="row">
+        <line-chart class="col-7 line-chart" 
+                    :investmentHorizon="investmentHorizon" 
+                    :query="query" 
+                    @graphRendered="metaData = $event" 
+                    @maxHorizonChanged="maxHorizon = $event">
+        </line-chart>
+        <stock-form class="col-4"
+                    :maxHorizon="maxHorizon"
+                    @querySubmitted="query = $event" 
+                    @investmentHorizonChanged="investmentHorizon = $event">
+        </stock-form>
+      </div>
+      
     </div>    
   </div>
 </template>
@@ -19,19 +31,22 @@
       return {
         query: "",        
         metaData: "",
-        stockSymbol: ''
+        stockSymbol: '',
+        investmentHorizon: 0,
+        maxHorizon: 0
       }
-    },
-    watch: {
-      query(){
-        console.log('in StockGraph')
-        console.log(this.query)
-      }
-    },
+    },   
     components: {
       lineChart: LineChart,
       stockForm: StockForm
     }
   }
 </script>
+
+<style>
+  .line-chart {
+    margin-right: 50px;
+  }
+</style>
+
 

@@ -1,33 +1,40 @@
 <template>
-  <div class="container">
-  <form @submit.prevent="formSubmitted">
-    <div class="form-group row">
-      <label for="inputSymbol" class="col-4 col-form-label col-form-label-lg">Symbol:</label>
-      <div class="col-8">
-        <input type="text" class="form-control" id="inputSymbol" placeholder="MFST" v-model="inputStockSymbol">
+  <div>
+    <form @submit.prevent="formSubmitted">
+      <div class="form-group row">
+        <label for="inputSymbol" class="col-4 col-form-label col-form-label-lg">Symbol:</label>
+        <div class="col-8">
+          <input type="text" class="form-control" id="inputSymbol" placeholder="MFST" v-model="inputStockSymbol">
+        </div>
       </div>
-    </div>
-    <div class="form-group row">
-      <label for="inputSymbol" class="col-4 col-form-label">Time Series:</label>
-      <div class="col-8">
-        <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" v-model="inputStockTimeSeries">
-          <option v-for="option in options" :key="option.text" :value="option.value">
-            {{ option.text }}
-          </option>
-        </select>        
+      <div class="form-group row">
+        <label for="inputSymbol" class="col-4 col-form-label">Time Series:</label>
+        <div class="col-8">
+          <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" v-model="inputStockTimeSeries" @change="formSubmitted">
+            <option v-for="option in options" :key="option.text" :value="option.value">
+              {{ option.text }}
+            </option>
+          </select>        
+        </div>
       </div>
-    </div>
-    <div class="form-group row" v-if ="inputStockTimeSeries == 'TIME_SERIES_INTRADAY'">
-      <label for="inputSymbol" class="col-4 col-form-label">Daily Interval:</label>
-      <div class="col-8">
-        <div class="custom-control custom-radio custom-control-inline" v-for="radioOption in radioOptions" :key="radioOption.label">
-          <input type="radio" :id="'radio-' + radioOption.value" name="radio-option" class="custom-control-input" v-model="inputStockInterval" :value="radioOption.value">
-          <label class="custom-control-label" :for="'radio-' + radioOption.value">{{ radioOption.label }}</label>          
-        </div>  
+      <div class="form-group row" v-if ="inputStockTimeSeries == 'TIME_SERIES_INTRADAY'">
+        <label for="inputSymbol" class="col-4 col-form-label">Daily Interval:</label>
+        <div class="col-8">
+          <div class="custom-control custom-radio custom-control-inline" v-for="radioOption in radioOptions" :key="radioOption.label">
+            <input type="radio" :id="'radio-' + radioOption.value" name="radio-option" class="custom-control-input" v-model="inputStockInterval" :value="radioOption.value" @click="formSubmitted">
+            <label class="custom-control-label" :for="'radio-' + radioOption.value">{{ radioOption.label }}</label>          
+          </div>  
+        </div>
       </div>
-    </div>
-    <input type="submit" class="btn btn-secondary"> 
-  </form>
+      <div class="form-group">
+        <label class="" for="horizonRange">Investment Horizon: {{inputStockInvestmentHorizon}} days</label>
+        
+        <input class="custom-range" type="range" id="horizonRange" :min="minInvestmentHorizon" :max="maxHorizon" step="1" v-model="inputStockInvestmentHorizon">
+        
+      </div>    
+      <input type="submit" class="btn btn-secondary">
+    </form>
+    
   </div>
 </template>
 
@@ -41,7 +48,10 @@
       return {
         inputStockSymbol: 'MSFT',
         inputStockInterval: '5min',
-        inputStockTimeSeries: 'TIME_SERIES_DAILY',
+        inputStockTimeSeries: 'TIME_SERIES_INTRADAY',
+        inputStockInvestmentHorizon: 0,
+        minInvestmentHorizon: 0,
+        maxInvestmentHorizon: 100,
         options: [
           {text: 'Intraday', value: 'TIME_SERIES_INTRADAY'},
           {text: 'Daily', value: 'TIME_SERIES_DAILY'},
@@ -57,10 +67,10 @@
         ]  
       }
     },
+    props: ['maxHorizon'],
     methods: {
-      formSubmitted: function() {      
-        console.log('in StockForm') 
-        console.log(this.query)
+      formSubmitted: function() {  
+        this.inputStockInvestmentHorizon = 0
         this.$emit('querySubmitted', this.query)
       }
     },
@@ -73,6 +83,11 @@
           //return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&outputsize=full&apikey=' + api.key
           return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&apikey=' + api.key
         }        
+      }
+    },
+    watch: {
+      inputStockInvestmentHorizon() {
+        this.$emit('investmentHorizonChanged', parseFloat(this.inputStockInvestmentHorizon))
       }
     }
   }
