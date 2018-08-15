@@ -1,6 +1,5 @@
 import { Line } from 'vue-chartjs'
 import axios from 'axios'
-import { stat } from '../../../../node_modules/fs-extra-p';
 
 export default {
   extends: Line,
@@ -39,6 +38,7 @@ export default {
             lineTension: 0,
             fill: false,
             pointRadius: 0,
+            spanGaps: true,
             //Data to be represented on y-axis
             data: []
           }
@@ -59,8 +59,7 @@ export default {
           this.rawStockData = response.data
         })            
     },
-    rawStockData(stockJSON) {
-      
+    rawStockData(stockJSON) {      
       const symbol = stockJSON['Meta Data']['2. Symbol']
       const timeIntervall = Object.keys(stockJSON)[1]
       this.datacollection.labels = Object.keys(stockJSON[timeIntervall]).reverse()
@@ -68,25 +67,18 @@ export default {
       const endX = 60
       const startY = stockJSON[timeIntervall][this.datacollection.labels[startX]]['1. open']
       const endY = stockJSON[timeIntervall][this.datacollection.labels[endX]]['1. open']
-      const pitch = (endY-startY)/(endX-startX)
-      
-      console.log(pitch)
-      
+      const pitch = (endY-startY)/(endX-startX)      
       this.datacollection.datasets[0].data = []
-      this.datacollection.datasets[1].data = []
+      this.datacollection.datasets[1].data = new Array(100)
+      this.datacollection.datasets[1].data.fill(null)
       for(let i =0; i < this.datacollection.labels.length; i++) {
         this.datacollection.datasets[0].data.push(stockJSON[timeIntervall][this.datacollection.labels[i]]['1. open'])
-        if(i >= 30 && i <= 60){
-          this.datacollection.datasets[1].data.push(pitch * (i - startX) + parseFloat(startY))
-          //this.datacollection.datasets[1].data.push(0.5 * i + 40)
-        } else {
-          this.datacollection.datasets[1].data.push(null)
-        }
-        // this.datacollection.datasets[1].data.push(stockJSON[timeIntervall][this.datacollection.labels[i]]['4. close'])
       }
-      //console.log(this.datacollection.datasets[1].data)
+      this.datacollection.datasets[1].data[startX] = this.datacollection.datasets[0].data[startX]
+      this.datacollection.datasets[1].data[endX] = this.datacollection.datasets[0].data[endX] 
       this.renderChart(this.datacollection, this.options)
       this.$emit('graphRendered', {symbol: symbol, timeSeries: timeIntervall})
+      console.log(this.datacollection.labels.length)
     }
   }
 }
