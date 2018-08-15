@@ -6,31 +6,31 @@
         <p>{{metaData.timeSeries}}</p>
       </div>
       <line-chart :query="query" @graphRendered="metaData = $event"></line-chart>
+      <stock-form @querySubmitted="query = $event" ></stock-form>
     </div>    
   </div>
 </template>
 
 <script>
   import LineChart from './LineChart.js'
+  import StockForm from './StockForm/StockForm'
   export default {
     data() {
-      return {        
+      return {
+        query: "",        
         metaData: "",
-        stockSymbol: '',
-        timeSeries: '',
-        timeStamps: '',
-        open: []
+        stockSymbol: ''
       }
-    },  
-    props: ['query'],
-    methods: {
-      metaDataReceived(event){
-        this.stockSymbol = event.symbol
-        this.timeSeries = event.timeSeries
+    },
+    watch: {
+      query(){
+        console.log('in StockGraph')
+        console.log(this.query)
       }
     },
     components: {
-      lineChart: LineChart
+      lineChart: LineChart,
+      stockForm: StockForm
     }
   }
 </script>

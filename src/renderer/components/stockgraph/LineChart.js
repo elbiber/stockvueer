@@ -23,7 +23,7 @@ export default {
             pointBorderColor: '#249EBF',
             lineTension: 0,
             fill: false,
-            pointRadius: 1,
+            pointRadius: 0,
             //Data to be represented on y-axis
            data: []
           },
@@ -49,11 +49,13 @@ export default {
   props: ['query'],
   computed: {
     queryUpdated() {
+      console.log("in Chart 1")
       return this.query
     }
   },
   watch: {
     queryUpdated(query) {
+      console.log("in Chart 2")
       axios.get(query)
         .then(response => {
           this.rawStockData = response.data
