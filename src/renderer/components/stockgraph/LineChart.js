@@ -3,9 +3,6 @@ import axios from 'axios'
 
 export default {
   extends: Line,
-  mounted() {
-    //this.renderChart(this.datacollection, this.options)
-  },
   data() {
     return {
       rawStockData: null,
@@ -63,8 +60,7 @@ export default {
             //Data to be represented on y-axis
             data: []
           }
-        ]
-        
+        ]        
       },
       options: {        
         animation: {
@@ -89,53 +85,86 @@ export default {
     queryUpdated(query) {
       axios.get(query)
         .then(response => {
-          this.rawStockData = response.data
+          if(response.data['Meta Data']) {
+            this.rawStockData = response.data
+          } else if(response.data['Information']) {
+            alert(response.data['Information'])
+          } else if(response.data['Error Message']) {
+            alert(response.data['Error Message'])
+          } else {
+            console.log('I dont know whats going on!')
+          }         
         })      
     },
-    rawStockData(stockJSON) {      
+    rawStockData(stockJSON) {
+
       const timeIntervall = Object.keys(stockJSON)[1]
-      this.datacollection.labels = Object.keys(stockJSON[timeIntervall]).reverse()
+
+      this.datacollection.labels = Object.keys(stockJSON[timeIntervall]).reverse()      
       this.datacollection.datasets[0].data = []
+      const graphOpenData = this.datacollection.datasets[0].data
+
       for(let i =0; i < this.datacollection.labels.length; i++) {
-        this.datacollection.datasets[0].data.push(parseFloat(stockJSON[timeIntervall][this.datacollection.labels[i]]['1. open']))
+        graphOpenData.push(parseFloat(stockJSON[timeIntervall][this.datacollection.labels[i]]['1. open']))
       }
+
       this.options.animation.duration = 1000
-      this.datacollection.datasets[1].data = new Array(100).fill(null)
-      this.datacollection.datasets[2].data = new Array(100).fill(null)
       this.renderChart(this.datacollection, this.options)
       this.$emit('graphRendered', {symbol: stockJSON['Meta Data']['2. Symbol'], timeSeries: timeIntervall})
+
     },
     investmentHorizon(val) {
-      console.log(val)
+
+      const graphOpenData = this.datacollection.datasets[0].data
+
+      this.datacollection.datasets[1].data = new Array().fill(null)
+      const graphMinData = this.datacollection.datasets[1].data
+
+      this.datacollection.datasets[2].data = new Array().fill(null)
+      const graphMaxData = this.datacollection.datasets[2].data
+
       this.horizon.minStartX = 0
       this.horizon.minEndX = val
       this.horizon.maxStartX = 0
       this.horizon.maxEndX = val
-      let min = this.datacollection.datasets[0].data[this.horizon.minStartX] - this.datacollection.datasets[0].data[this.horizon.minEndX = val]
+
+      let min = graphOpenData[this.horizon.minStartX] - graphOpenData[this.horizon.minEndX = val]
       let max = min
+
       for(let i = val; i <= this.maxHorizon; i++) {
-        if(this.datacollection.datasets[0].data[i] - this.datacollection.datasets[0].data[i - val] < min) {
-          min = this.datacollection.datasets[0].data[i] - this.datacollection.datasets[0].data[i - val]
+        if(graphOpenData[i] - graphOpenData[i - val] < min) {
+          min = graphOpenData[i] - graphOpenData[i - val]
           this.horizon.minStartX = i - val
           this.horizon.minEndX = i
         }
-        if(this.datacollection.datasets[0].data[i] - this.datacollection.datasets[0].data[i - val] > max) {
-          max = this.datacollection.datasets[0].data[i] - this.datacollection.datasets[0].data[i - val]
+        if(graphOpenData[i] - graphOpenData[i - val] > max) {
+          max = graphOpenData[i] - graphOpenData[i - val]
           this.horizon.maxStartX = i - val
           this.horizon.maxEndX = i
         }
       }
-      this.datacollection.datasets[1].data = new Array(100).fill(null)
-      this.datacollection.datasets[1].data[this.horizon.minStartX] = this.datacollection.datasets[0].data[this.horizon.minStartX]
-      this.datacollection.datasets[1].data[this.horizon.minEndX] = this.datacollection.datasets[0].data[this.horizon.minEndX]
-      this.datacollection.datasets[2].data = new Array(100).fill(null)
-      this.datacollection.datasets[2].data[this.horizon.maxStartX] = this.datacollection.datasets[0].data[this.horizon.maxStartX]
-      this.datacollection.datasets[2].data[this.horizon.maxEndX] = this.datacollection.datasets[0].data[this.horizon.maxEndX]
+      
+      graphMinData[this.horizon.minStartX] = graphOpenData[this.horizon.minStartX]
+      graphMinData[this.horizon.minEndX] = graphOpenData[this.horizon.minEndX]
+
+      graphMaxData[this.horizon.maxStartX] = graphOpenData[this.horizon.maxStartX]
+      graphMaxData[this.horizon.maxEndX] = graphOpenData[this.horizon.maxEndX]
+
       this.options.animation.duration = 0
+
+      const yieldData = {
+        startMinDate: this.datacollection.labels[this.horizon.minStartX],
+        endMinDate: this.datacollection.labels[this.horizon.minEndX],
+        minYield: (graphOpenData[this.horizon.minEndX] - graphOpenData[this.horizon.minStartX]) * 100 / graphOpenData[this.horizon.minEndX],
+        startMaxDate: this.datacollection.labels[this.horizon.maxStartX],
+        endMaxDate: this.datacollection.labels[this.horizon.maxEndX],
+        maxYield:(graphOpenData[this.horizon.maxEndX] - graphOpenData[this.horizon.maxStartX]) * 100 / graphOpenData[this.horizon.maxEndX]
+      }
+      
+      this.$emit('yieldDataChanged', yieldData)
       this.renderChart(this.datacollection, this.options)
     },
     maxHorizon(val) {
-      console.log('Max Horizon: '+ val)
       this.$emit('maxHorizonChanged',val)
     }
   }

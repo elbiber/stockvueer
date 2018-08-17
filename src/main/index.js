@@ -8,7 +8,7 @@ app.on('ready', () => {
   let window = new BrowserWindow({
      width: 1020, 
      height: 1020,
-     title: "Stockvueer"
+     title: "Stockvueer 1.0"
     })
   if (isDevelopment) {
     window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)

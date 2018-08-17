@@ -2,7 +2,7 @@
   <div class="container">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">{{metaData.symbol}}</h3>
+        <h3 class="box-title">{{metaData.symbol | upperCase}}</h3>
         <p>{{metaData.timeSeries}}</p>
       </div>
       <div class="row">
@@ -10,10 +10,12 @@
                     :investmentHorizon="investmentHorizon" 
                     :query="query" 
                     @graphRendered="metaData = $event" 
-                    @maxHorizonChanged="maxHorizon = $event">
+                    @maxHorizonChanged="maxHorizon = $event"
+                    @yieldDataChanged="yieldData=$event">
         </line-chart>
         <stock-form class="col-4"
                     :maxHorizon="maxHorizon"
+                    :yieldData="yieldData"
                     @querySubmitted="query = $event" 
                     @investmentHorizonChanged="investmentHorizon = $event">
         </stock-form>
@@ -33,12 +35,19 @@
         metaData: "",
         stockSymbol: '',
         investmentHorizon: 0,
-        maxHorizon: 0
+        maxHorizon: 0,
+        yieldData: null
       }
     },   
     components: {
       lineChart: LineChart,
       stockForm: StockForm
+    },
+    filters: {
+      upperCase(val) {
+        if (!val) return ''
+        return val.toUpperCase()
+      }
     }
   }
 </script>

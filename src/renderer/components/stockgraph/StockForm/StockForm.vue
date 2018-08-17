@@ -26,9 +26,17 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="" for="horizonRange">Investment Horizon: {{timeUnit}}</label>        
+        <label class="" for="horizonRange">Investment Horizon: {{ timeUnit }}</label>        
         <input class="custom-range" type="range" id="horizonRange" :min="minInvestmentHorizon" :max="maxHorizon" step="1" v-model="inputStockInvestmentHorizon">        
       </div>      
+      <div class="form-group" v-if="inputStockInvestmentHorizon > 0 && yieldData">
+        <div class="col">
+          <label class="row" for="horizonRange">Minimum Yield:&nbsp;<span  style="color: red"> {{ yieldData.minYield | floorYield }}%</span></label>                  
+          <label class="row" for="horizonRange">From: {{ yieldData.startMinDate }} to: {{ yieldData.endMinDate }}</label>
+          <label class="row" for="horizonRange">Maximum Yield:&nbsp;<span  style="color: green"> {{ yieldData.maxYield | floorYield }} %</span></label>        
+          <label class="row" for="horizonRange">From: {{ yieldData.startMaxDate }} to: {{ yieldData.endMaxDate }}</label>
+        </div>                
+      </div>  
     </form>
   </div>
 </template>
@@ -44,9 +52,11 @@
         inputStockSymbol: 'MSFT',
         inputStockInterval: '5min',
         inputStockTimeSeries: 'TIME_SERIES_DAILY',
-        inputStockInvestmentHorizon: 0,
+        inputStockInvestmentHorizon: 20,
         minInvestmentHorizon: 0,
         maxInvestmentHorizon: 100,
+        minYield: -2.3,
+        maxYield: 23.78,
         options: [
           {text: 'Intraday', value: 'TIME_SERIES_INTRADAY'},
           {text: 'Daily', value: 'TIME_SERIES_DAILY'},
@@ -62,7 +72,7 @@
         ]  
       }
     },
-    props: ['maxHorizon'],
+    props: ['maxHorizon','yieldData'],
     methods: {
       formSubmitted: function() {  
         this.inputStockInvestmentHorizon = 0
@@ -123,6 +133,12 @@
       },
       inputStockInvestmentHorizon() {
         this.$emit('investmentHorizonChanged', parseFloat(this.inputStockInvestmentHorizon))
+      }
+    },    
+    filters: {
+      floorYield(val) {
+        if (!val) return ''
+        return Math.floor(val * 100) / 100;
       }
     }
   }

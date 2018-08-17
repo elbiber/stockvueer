@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1 class="text-center">Stockvueer 1.0</h1><hr>
+    <h1 class="text-center">Stockvueer</h1><hr>
     <stock-graph></stock-graph>  
   </div>
 </template>
