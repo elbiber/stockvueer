@@ -2,10 +2,9 @@
   <div>
     <form @submit.prevent="formSubmitted">
       <div class="form-group row">
-        <label for="inputSymbol" class="col-4 col-form-label col-form-label-lg">Symbol:</label>
-        <div class="col-8">
-          <input type="text" class="form-control" id="inputSymbol" placeholder="MFST" v-model="inputStockSymbol">
-        </div>
+        <label for="inputSymbol" class="col-3 col-form-label col-form-label-lg">Symbol:</label>
+        <input type="text" class="form-control col-5 symbol-text-input" id="inputSymbol" placeholder="MFST" v-model="inputStockSymbol">        
+        <input type="submit" class="btn btn-secondary" value="Search">
       </div>
       <div class="form-group row">
         <label for="inputSymbol" class="col-4 col-form-label">Time Series:</label>
@@ -21,20 +20,16 @@
         <label for="inputSymbol" class="col-4 col-form-label">Daily Interval:</label>
         <div class="col-8">
           <div class="custom-control custom-radio custom-control-inline" v-for="radioOption in radioOptions" :key="radioOption.label">
-            <input type="radio" :id="'radio-' + radioOption.value" name="radio-option" class="custom-control-input" v-model="inputStockInterval" :value="radioOption.value" @click="formSubmitted">
+            <input type="radio" :id="'radio-' + radioOption.value" name="radio-option" class="custom-control-input" v-model="inputStockInterval" :value="radioOption.value">
             <label class="custom-control-label" :for="'radio-' + radioOption.value">{{ radioOption.label }}</label>          
           </div>  
         </div>
       </div>
       <div class="form-group">
-        <label class="" for="horizonRange">Investment Horizon: {{inputStockInvestmentHorizon}} days</label>
-        
-        <input class="custom-range" type="range" id="horizonRange" :min="minInvestmentHorizon" :max="maxHorizon" step="1" v-model="inputStockInvestmentHorizon">
-        
-      </div>    
-      <input type="submit" class="btn btn-secondary">
+        <label class="" for="horizonRange">Investment Horizon: {{timeUnit}}</label>        
+        <input class="custom-range" type="range" id="horizonRange" :min="minInvestmentHorizon" :max="maxHorizon" step="1" v-model="inputStockInvestmentHorizon">        
+      </div>      
     </form>
-    
   </div>
 </template>
 
@@ -48,7 +43,7 @@
       return {
         inputStockSymbol: 'MSFT',
         inputStockInterval: '5min',
-        inputStockTimeSeries: 'TIME_SERIES_INTRADAY',
+        inputStockTimeSeries: 'TIME_SERIES_DAILY',
         inputStockInvestmentHorizon: 0,
         minInvestmentHorizon: 0,
         maxInvestmentHorizon: 100,
@@ -83,9 +78,49 @@
           //return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&outputsize=full&apikey=' + api.key
           return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&apikey=' + api.key
         }        
+      },
+      timeUnit() {
+        switch(this.inputStockTimeSeries) {
+          case 'TIME_SERIES_INTRADAY':
+            switch(this.inputStockInterval) {
+              case '1min': 
+                return this.inputStockInvestmentHorizon +' minutes'
+                break
+              case '5min': 
+                return this.inputStockInvestmentHorizon * 5 +' minutes'
+                break
+              case '15min': 
+                return this.inputStockInvestmentHorizon * 15 + ' minutes'
+                break
+              case '30min': 
+                return this.inputStockInvestmentHorizon * 30 +' minutes'
+                break
+              case '60min': 
+                return this.inputStockInvestmentHorizon +' hours'
+                break                                                               
+            }
+            break
+          case 'TIME_SERIES_DAILY':
+            return this.inputStockInvestmentHorizon +' days'
+            break
+          case 'TIME_SERIES_WEEKLY':
+            return this.inputStockInvestmentHorizon +' weeks'
+            break;
+          case 'TIME_SERIES_MONTHLY':
+            return this.inputStockInvestmentHorizon +' months'
+            break
+          default:
+            return this.inputStockInvestmentHorizon +' days'
+          }
       }
     },
     watch: {
+      inputStockTimeSeries() {
+        this.formSubmitted()
+      },
+      inputStockInterval() {
+        this.formSubmitted()
+      },
       inputStockInvestmentHorizon() {
         this.$emit('investmentHorizonChanged', parseFloat(this.inputStockInvestmentHorizon))
       }
@@ -103,5 +138,9 @@
   form {
     border-left: 1px
   }
+  .symbol-text-input {
+    margin-right: 10px;
+  }
+  
 </style>
 

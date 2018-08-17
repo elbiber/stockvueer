@@ -73,7 +73,10 @@ export default {
       }        
     }   
   },
-  props: ['query','investmentHorizon'],
+  props: {
+    'query': [String],
+    'investmentHorizon': [Number]
+  },
   computed: {
     queryUpdated() {
       return this.query

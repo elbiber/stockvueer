@@ -6,8 +6,8 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 
 app.on('ready', () => {
   let window = new BrowserWindow({
-     width: 1600, 
-     height: 900,
+     width: 1020, 
+     height: 1020,
      title: "Stockvueer"
     })
   if (isDevelopment) {
