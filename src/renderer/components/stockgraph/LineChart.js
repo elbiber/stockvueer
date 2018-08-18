@@ -86,6 +86,7 @@ export default {
       axios.get(query)
         .then(response => {
           if(response.data['Meta Data']) {
+            console.log(response.data)
             this.rawStockData = response.data
           } else if(response.data['Information']) {
             alert(response.data['Information'])
@@ -160,7 +161,7 @@ export default {
         endMaxDate: this.datacollection.labels[this.horizon.maxEndX],
         maxYield:(graphOpenData[this.horizon.maxEndX] - graphOpenData[this.horizon.maxStartX]) * 100 / graphOpenData[this.horizon.maxEndX]
       }
-      
+
       this.$emit('yieldDataChanged', yieldData)
       this.renderChart(this.datacollection, this.options)
     },

@@ -82,11 +82,11 @@
     computed: {
       query() {
         if(this.inputStockTimeSeries == 'TIME_SERIES_INTRADAY') {
-          //return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&interval='+this.inputStockInterval+'&outputsize=full&apikey=' + api.key
-          return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&interval='+this.inputStockInterval+'&apikey=' + api.key
+          return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&interval='+this.inputStockInterval+'&outputsize=full&apikey=' + api.key
+          //return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&interval='+this.inputStockInterval+'&apikey=' + api.key
         } else {
-          //return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&outputsize=full&apikey=' + api.key
-          return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&apikey=' + api.key
+          return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&outputsize=full&apikey=' + api.key
+          //return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&apikey=' + api.key
         }        
       },
       timeUnit() {
