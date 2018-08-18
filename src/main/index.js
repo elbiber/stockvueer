@@ -8,7 +8,8 @@ app.on('ready', () => {
   let window = new BrowserWindow({
      width: 1020, 
      height: 1020,
-     title: "Stockvueer 2.0 iex"
+     title: "Stockvueer 2.0 iex",
+     show: false
     })
   if (isDevelopment) {
     window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
@@ -20,6 +21,9 @@ app.on('ready', () => {
       slashes: true
     }))
   }
+  window.once('ready-to-show', () => {
+    window.show()
+  })
   window.on("closed", () => {
     window = null;
   })

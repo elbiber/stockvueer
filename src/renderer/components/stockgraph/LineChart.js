@@ -1,11 +1,13 @@
 import { Line } from 'vue-chartjs'
 import axios from 'axios'
-
+import { IEXClient } from 'iex-api'
+import * as _fetch from 'isomorphic-fetch'
 export default {
   extends: Line,
   data() {
     return {
-      rawStockData: null,
+      chartData: null,
+      chartMetaData: null,
       horizon: {
         minStartX: 0,
         minEndX: 0,
@@ -31,7 +33,7 @@ export default {
            data: []
           },
           {
-            label: 'Min Payload',
+            label: 'Min Yield',
             //backgroundColor: '#f87979',
             borderWidth: 10,
             borderColor: 'red',
@@ -46,7 +48,7 @@ export default {
             data: []
           },
           {
-            label: 'Max Payload',
+            label: 'Max Yield',
             //backgroundColor: '#f87979',
             borderWidth: 10,
             borderColor: 'green',
@@ -70,49 +72,39 @@ export default {
     }   
   },
   props: {
-    'query': [String],
+    'stockData': [Object],
     'investmentHorizon': [Number]
   },
   computed: {
-    queryUpdated() {
-      return this.query
-    },
     maxHorizon() {
       return this.datacollection.labels.length - 1
     }
   },
   watch: {
-    queryUpdated(query) {
-      axios.get(query)
-        .then(response => {
-          if(response.data['Meta Data']) {
-            console.log(response.data)
-            this.rawStockData = response.data
-          } else if(response.data['Information']) {
-            alert(response.data['Information'])
-          } else if(response.data['Error Message']) {
-            alert(response.data['Error Message'])
-          } else {
-            console.log('I dont know whats going on!')
-          }         
-        })      
+    stockData(val) {
+      const iex = new IEXClient(_fetch)
+      iex.stockChart(val.symbol, val.range)
+         .then(chart => this.chartData = chart)
+      iex.stockCompany(val.symbol)
+         .then(meta => this.chartMetaData = meta)
     },
-    rawStockData(stockJSON) {
-
-      const timeIntervall = Object.keys(stockJSON)[1]
-
-      this.datacollection.labels = Object.keys(stockJSON[timeIntervall]).reverse()      
-      this.datacollection.datasets[0].data = []
-      const graphOpenData = this.datacollection.datasets[0].data
-
-      for(let i =0; i < this.datacollection.labels.length; i++) {
-        graphOpenData.push(parseFloat(stockJSON[timeIntervall][this.datacollection.labels[i]]['1. open']))
+    chartData(val) {      
+      this.datacollection.datasets[1].data = new Array().fill(null)
+      this.datacollection.datasets[2].data = new Array().fill(null)
+      this.datacollection.labels = val.map(a => a.date)
+      if(this.stockData.range === '1d') {
+        this.datacollection.labels = val.map(a => a.minute)
+      } else {
+        this.datacollection.labels = val.map(a => a.date)
       }
-
+      this.datacollection.datasets[0].data =val.map(a => a.open)
       this.options.animation.duration = 1000
       this.renderChart(this.datacollection, this.options)
-      this.$emit('graphRendered', {symbol: stockJSON['Meta Data']['2. Symbol'], timeSeries: timeIntervall})
-
+    },
+    chartMetaData(val) {
+      console.log('Meta')
+      console.log(val)
+      this.$emit('graphRendered', val)
     },
     investmentHorizon(val) {
 

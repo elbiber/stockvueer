@@ -3,7 +3,7 @@
     <form @submit.prevent="formSubmitted">
       <div class="form-group row">
         <label for="inputSymbol" class="col-3 col-form-label col-form-label-lg">Symbol:</label>
-        <input type="text" class="form-control col-5 symbol-text-input" id="inputSymbol" placeholder="MFST" v-model="inputStockSymbol">        
+        <input type="text" class="form-control col-5 symbol-text-input" id="inputSymbol" placeholder="AAPL" v-model="inputStockSymbol">        
         <input type="submit" class="btn btn-secondary" value="Search">
       </div>
       <div class="form-group row">
@@ -49,19 +49,25 @@
     },
     data() {
       return {
+        stockData: {
+          symbol: 'AAPL'
+        },
         inputStockSymbol: 'MSFT',
         inputStockInterval: '5min',
-        inputStockTimeSeries: 'TIME_SERIES_DAILY',
+        inputStockTimeSeries: '1y',
         inputStockInvestmentHorizon: 20,
         minInvestmentHorizon: 0,
         maxInvestmentHorizon: 100,
         minYield: -2.3,
         maxYield: 23.78,
         options: [
-          {text: 'Intraday', value: 'TIME_SERIES_INTRADAY'},
-          {text: 'Daily', value: 'TIME_SERIES_DAILY'},
-          {text: 'Weekly', value: 'TIME_SERIES_WEEKLY'},
-          {text: 'Monthly', value: 'TIME_SERIES_MONTHLY'}
+          {text: '5 years', value: '5y'},
+          {text: '2 years', value: '2y'},
+          {text: '1 year', value: '1y'},
+          {text: '6 months', value: '6m'},
+          {text: '3 months', value: '3m'},
+          {text: '1 months', value: '1m'},
+          {text: '1 day', value: '1d'}
         ],
         radioOptions: [
           {label: '1 min', value: '1min'},
@@ -76,19 +82,11 @@
     methods: {
       formSubmitted: function() {  
         this.inputStockInvestmentHorizon = 0
-        this.$emit('querySubmitted', this.query)
+        this.$emit('stockDataSubmitted', {symbol: this.inputStockSymbol, range: this.inputStockTimeSeries})
       }
     },
     computed: {
-      query() {
-        if(this.inputStockTimeSeries == 'TIME_SERIES_INTRADAY') {
-          return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&interval='+this.inputStockInterval+'&outputsize=full&apikey=' + api.key
-          //return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&interval='+this.inputStockInterval+'&apikey=' + api.key
-        } else {
-          return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&outputsize=full&apikey=' + api.key
-          //return 'https://www.alphavantage.co/query?function=' + this.inputStockTimeSeries +'&symbol=' + this.inputStockSymbol + '&apikey=' + api.key
-        }        
-      },
+ 
       timeUnit() {
         switch(this.inputStockTimeSeries) {
           case 'TIME_SERIES_INTRADAY':
