@@ -2,6 +2,7 @@ import { Line } from 'vue-chartjs'
 import axios from 'axios'
 import { IEXClient } from 'iex-api'
 import * as _fetch from 'isomorphic-fetch'
+
 export default {
   extends: Line,
   data() {
@@ -20,7 +21,6 @@ export default {
         datasets: [
           {
             label: 'Open',
-            //backgroundColor: '#f87979',
             borderWidth: 10,
             borderColor: 'rgba(0, 0, 0, 0.5)',
             pointBackgroundColor: 'white',
@@ -34,7 +34,6 @@ export default {
           },
           {
             label: 'Min Yield',
-            //backgroundColor: '#f87979',
             borderWidth: 10,
             borderColor: 'red',
             pointBackgroundColor: 'white',
@@ -49,7 +48,6 @@ export default {
           },
           {
             label: 'Max Yield',
-            //backgroundColor: '#f87979',
             borderWidth: 10,
             borderColor: 'green',
             pointBackgroundColor: 'white',
